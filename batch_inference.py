@@ -269,8 +269,8 @@ def main():
                         help="模型路径")
     
     # 推理参数
-    parser.add_argument("--prompt", type=str, default="QwenVL HTML",
-                        help="提示词 (默认: QwenVL HTML)")
+    parser.add_argument("--prompt", type=str, default="Convert this document to HTML. Ignore watermarks, page numbers, and headers/footers. Focus only on the main content.",
+                        help="提示词 (默认: 转换文档为HTML，忽略水印)")
     parser.add_argument("--attn", type=str, default="sdpa", choices=["sdpa", "flash_attention_2"],
                         help="注意力机制实现")
     parser.add_argument("--dtype", type=str, default="auto", choices=["auto", "bf16", "fp16", "fp32"],

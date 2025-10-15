@@ -167,8 +167,8 @@ if __name__ == "__main__":
                         help="Path to the input image file for parsing.")
     parser.add_argument("--output_path", type=str, required=True, 
                         help="Path to save the prediction.")
-    parser.add_argument("--prompt", type=str, default="QwenVL HTML", 
-                        help="The prompt to send to the model. (default: %(default)s)")
+    parser.add_argument("--prompt", type=str, default="Convert this document to HTML. Ignore watermarks, page numbers, and headers/footers. Focus only on the main content.", 
+                        help="The prompt to send to the model. (default: Convert to HTML, ignore watermarks)")
 
     # 新增可配置参数
     parser.add_argument("--attn", type=str, default="sdpa", choices=["sdpa", "flash_attention_2"],

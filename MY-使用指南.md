@@ -1,5 +1,11 @@
 # 1-快速入门
 
+> 使用评价：
+>
+> * 能解析一部分图表，效果不算特别好，有些表格行会缺失。
+> * 如果文档中有水印，会被水印干扰。
+> * 我本地16G的GPU，推理解析速度有点慢。
+
 ## 下载源码
 
 ## 1.1-安装：【推荐】
@@ -112,7 +118,7 @@ python batch_inference.py --model_path "E:\llm_models\weights\Logics-Parsing" --
 
 - `--no_viz`: 不生成可视化图片
 - `--no_merge`: 不合并HTML文件
-- `--prompt`: 提示词（默认: "QwenVL HTML"）
+- `--prompt`: 自定义提示词（默认已优化为忽略水印、页码、页眉页脚）
 
 ### 输出文件说明
 
@@ -156,6 +162,52 @@ Select-String -Path app.log -Pattern "错误|ERROR|失败"
 3. **处理时间**：每个页面处理时间取决于图片复杂度，通常需要几十秒
 4. **中断恢复**：如果处理中断，可以手动删除已处理的文件，重新运行会跳过
 5. **日志文件**：`app.log` 会记录每个文件的处理详情，便于追踪问题
+
+### 水印和干扰信息过滤
+
+**默认提示词已优化：**
+脚本默认会指示模型**忽略水印、页码、页眉页脚**，只提取正文内容。
+
+**如果仍然提取了水印，可以尝试：**
+
+1. **使用更强的提示词**：
+
+```bash
+python batch_inference.py \
+  --model_path "PATH_TO_MODEL" \
+  --prompt "Extract only the main content from this document. DO NOT include watermarks, page numbers, headers, footers, or any repeated background text. Focus on the actual document content like paragraphs, tables, and images."
+```
+
+2. **中文提示词**（可能效果更好）：
+
+```bash
+python batch_inference.py \
+  --model_path "PATH_TO_MODEL" \
+  --prompt "将文档转换为HTML格式。请忽略所有水印、页码、页眉页脚等干扰信息，只提取正文内容，包括文字、表格和图片。"
+```
+
+3. **后处理清理**（推荐）：
+   使用专门的水印清理脚本 `clean_watermark.py`：
+
+```bash
+# 基本用法（清理默认的水印模式）
+python clean_watermark.py --input_dir my_out
+
+# 自定义清理规则
+python clean_watermark.py --input_dir my_out --pattern "网构码[／/]?\d*" --pattern "<td></td>"
+
+# 不备份原文件（慎用）
+python clean_watermark.py --input_dir my_out --no_backup
+```
+
+**默认清理的模式包括：**
+
+- `网构码／\d+` - 网构码水印
+- `<td>网构码／\d+</td>` - 表格中的网构码
+- `第 X 页 共 Y 页` - 中文页码
+- `Page X of Y` - 英文页码
+
+**注意：** 原文件会自动备份为 `.bak` 文件，确认无误后可手动删除
 
 ### 示例输出
 
