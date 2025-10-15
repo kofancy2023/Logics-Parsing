@@ -1,7 +1,12 @@
-torch==2.5.1
-torchvision==0.20.1 
-torchaudio==2.5.1
+# 安装提示：先按 README 指引单独安装 PyTorch(CUDA 12.4) 后，再安装本文件中的其余依赖。
+# 本文件不再固定安装 torch/torchvision/torchaudio，也不强制安装 flash-attn（Windows 下普遍无法直接安装）。
+
 transformers==4.51.0
 accelerate==1.0.0
-flash-attn>=2.4.2
 opencv-python
+pillow
+huggingface_hub
+# 如需从 ModelScope 下载模型，启用下行（若安装困难，可改用 huggingface）
+modelscope>=1.15.0
+safetensors
+sentencepiece
