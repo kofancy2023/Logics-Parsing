@@ -223,13 +223,15 @@ if __name__ == "__main__":
     # 加载模型（尽量使用 sdpa，若强制 flash 失败则回退）
     try:
         if use_cuda:
-            # 使用 CUDA 时，强制所有参数加载到 GPU，避免 CPU offload
+            # 使用 CUDA 时，让 device_map="auto" 自动决定最佳分配策略
+            # 不设置 max_memory，避免参数被offload到磁盘
+            print("使用自动设备映射（device_map=auto）")
+            
             model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
                 model_path,
                 torch_dtype=dtype,
                 attn_implementation=attn_impl,
-                device_map="cuda",
-                low_cpu_mem_usage=False,
+                device_map="auto",
             )
         else:
             model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
@@ -246,8 +248,7 @@ if __name__ == "__main__":
                     model_path,
                     torch_dtype=dtype,
                     attn_implementation="sdpa",
-                    device_map="cuda",
-                    low_cpu_mem_usage=False,
+                    device_map="auto",
                 )
             else:
                 model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
